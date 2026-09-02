@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Форум{% endblock %}
+
+{% block content %}
+<h1>Все темы</h1>
+
+{% if topics %}
+    <div class="topics-list">
+        {% for topic in topics %}
+            <div class="topic-item">
+                <h2>
+                    <a href="/topic/{{ topic.id }}">{{ topic.title }}</a>
+                </h2>
+                <div class="topic-meta">
+                    <span>Автор: {{ topic.author.username }}</span>
+                    <span>Просмотров: {{ topic.views }}</span>
+                    <span>Создано: {{ topic.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                    {% if topic.updated_at %}
+                        <span>Обновлено: {{ topic.updated_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                    {% endif %}
+                </div>
+                <div class="topic-preview">
+                    {{ topic.content[:200] }}{% if topic.content|length > 200 %}...{% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="empty-message">Пока нет ни одной темы. Будьте первым!</p>
+{% endif %}
+{% endblock %}

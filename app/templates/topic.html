@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }} - Форум{% endblock %}
+
+{% block content %}
+<div class="topic-header">
+    <h1>{{ topic.title }}</h1>
+    <div class="topic-meta">
+        <span>Автор: {{ topic.author.username }}</span>
+        <span>Просмотров: {{ topic.views }}</span>
+        <span>Создано: {{ topic.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+        {% if topic.updated_at %}
+            <span>Обновлено: {{ topic.updated_at.strftime('%d.%m.%Y %H:%M') }}</span>
+        {% endif %}
+    </div>
+    
+    {% if current_user and current_user.id == topic.author_id %}
+        <div class="topic-actions">
+            <a href="/topic/{{ topic.id }}/edit" class="btn btn-primary">Редактировать</a>
+            <button onclick="deleteTopic()" class="btn btn-danger">Удалить</button>
+        </div>
+    {% endif %}
+</div>
+
+<div class="topic-content">
+    {{ topic.content|replace('\n', '<br>')|safe }}
+</div>
+
+<div class="posts-section">
+    <h2>Ответы</h2>
+    
+    {% if posts_with_replies %}
+        {% for item in posts_with_replies %}
+            <div class="post" id="post-{{ item.post.id }}">
+                <div class="post-header">
+                    <span class="post-author">{{ item.post.author.username }}</span>
+                    <span class="post-date">{{ item.post.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                    {% if current_user and current_user.id == item.post.author_id %}
+                        <button onclick="deletePost({{ item.post.id }})" class="btn-small btn-danger">Удалить</button>
+                    {% endif %}
+                </div>
+                <div class="post-content">
+                    {{ item.post.content|replace('\n', '<br>')|safe }}
+                </div>
+                
+                {% if current_user %}
+                    <button onclick="showReplyForm({{ item.post.id }})" class="btn-small btn-secondary">Ответить</button>
+                    <div id="reply-form-{{ item.post.id }}" class="reply-form" style="display: none;">
+                        <form method="post" action="/topic/{{ topic.id }}/post">
+                            <input type="hidden" name="parent_post_id" value="{{ item.post.id }}">
+                            <textarea name="content" rows="3" placeholder="Ваш ответ..."></textarea>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </form>
+                    </div>
+                {% endif %}
+                
+                {% if item.replies %}
+                    <div class="replies">
+                        {% for reply in item.replies %}
+                            <div class="reply" id="post-{{ reply.id }}">
+                                <div class="reply-header">
+                                    <span class="reply-author">{{ reply.author.username }}</span>
+                                    <span class="reply-date">{{ reply.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                                    {% if current_user and current_user.id == reply.author_id %}
+                                        <button onclick="deletePost({{ reply.id }})" class="btn-small btn-danger">Удалить</button>
+                                    {% endif %}
+                                </div>
+                                <div class="reply-content">
+                                    {{ reply.content|replace('\n', '<br>')|safe }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">Нет ответов. Будьте первым!</p>
+    {% endif %}
+</div>
+
+{% if current_user %}
+    <div class="add-post">
+        <h3>Добавить ответ</h3>
+        <form method="post" action="/topic/{{ topic.id }}/post">
+            <textarea name="content" rows="5" placeholder="Ваш ответ..." required></textarea>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+{% else %}
+    <p class="info-message">Чтобы ответить, <a href="/login">войдите</a> или <a href="/register">зарегистрируйтесь</a>.</p>
+{% endif %}
+
+<script>
+function deleteTopic() {
+    if (confirm('Вы уверены, что хотите удалить эту тему?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/topic/{{ topic.id }}/delete';
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function deletePost(postId) {
+    if (confirm('Вы уверены, что хотите удалить этот пост?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/post/' + postId + '/delete';
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function showReplyForm(postId) {
+    const form = document.getElementById('reply-form-' + postId);
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

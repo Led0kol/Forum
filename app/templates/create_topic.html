@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Создать тему - Форум{% endblock %}
+
+{% block content %}
+<h1>Создать новую тему</h1>
+
+<form method="post" action="/topic/create">
+    <div class="form-group">
+        <label for="title">Заголовок</label>
+        <input type="text" id="title" name="title" required 
+               value="{{ title if title else '' }}" 
+               placeholder="Введите заголовок темы">
+    </div>
+    
+    <div class="form-group">
+        <label for="content">Содержание</label>
+        <textarea id="content" name="content" rows="10" required 
+                  placeholder="Введите текст темы...">{{ content if content else '' }}</textarea>
+    </div>
+    
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% endif %}
+    
+    <button type="submit" class="btn btn-primary">Создать тему</button>
+    <a href="/static" class="btn btn-secondary">Отмена</a>
+</form>
+{% endblock %}

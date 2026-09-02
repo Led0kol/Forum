@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Вход - Форум{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Вход</h1>
+    
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% endif %}
+    
+    <form method="post" action="/login">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required 
+                   value="{{ email if email else '' }}" 
+                   placeholder="Введите ваш email">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" name="password" required 
+                   placeholder="Введите пароль">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    
+    <p class="auth-links">
+        Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>
+    </p>
+</div>
+{% endblock %}

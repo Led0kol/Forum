@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация - Форум{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h1>Регистрация</h1>
+    
+    <form method="post" action="/register">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required 
+                   value="{{ email if email else '' }}" 
+                   placeholder="Введите ваш email">
+            {% if errors and errors.email %}
+                <div class="field-error">{{ errors.email }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Имя пользователя</label>
+            <input type="text" id="username" name="username" required 
+                   value="{{ username if username else '' }}" 
+                   placeholder="Введите имя пользователя">
+            {% if errors and errors.username %}
+                <div class="field-error">{{ errors.username }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" name="password" required 
+                   placeholder="Минимум 6 символов">
+            {% if errors and errors.password %}
+                <div class="field-error">{{ errors.password }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="confirm_password">Подтверждение пароля</label>
+            <input type="password" id="confirm_password" name="confirm_password" required 
+                   placeholder="Повторите пароль">
+            {% if errors and errors.confirm_password %}
+                <div class="field-error">{{ errors.confirm_password }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+    
+    <p class="auth-links">
+        Уже есть аккаунт? <a href="/login">Войдите</a>
+    </p>
+</div>
+{% endblock %}
