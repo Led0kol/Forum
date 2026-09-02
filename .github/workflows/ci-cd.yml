@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ "main" ]  # Пайплайн запускается при пуше в main
+    branches: [ "master" ]  # Пайплайн запускается при пуше в main
 
 jobs:
   build-and-push:
