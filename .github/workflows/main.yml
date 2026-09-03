@@ -1,0 +1,29 @@
+name: Debug SSH Connection
+
+on:
+  workflow_dispatch:  # Ручной запуск
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check SSH key format
+      run: |
+        echo "Checking SSH key format..."
+        echo "${{ secrets.WINDOWS_SSH_KEY }}" | head -n 1
+        echo "Key starts with: $(echo '${{ secrets.WINDOWS_SSH_KEY }}' | head -c 20)..."
+        
+    - name: Create SSH key file
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.WINDOWS_SSH_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        echo "✅ SSH key created"
+        
+    - name: Test SSH connection with verbose output
+      run: |
+        ssh -v -i ~/.ssh/id_ed25519 \
+          -o StrictHostKeyChecking=no \
+          -p ${{ secrets.WINDOWS_PORT }} \
+          ${{ secrets.WINDOWS_USERNAME }}@${{ secrets.WINDOWS_HOST }} \
+          "echo '✅ Connected!'"
