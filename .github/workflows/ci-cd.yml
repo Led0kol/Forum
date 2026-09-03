@@ -94,17 +94,17 @@ jobs:
         cp -r static deploy_temp/
         echo "✅ Files prepared"
 
-    - name: Copy files to Windows Server via SCP
-      uses: appleboy/scp-action@v1
-      with:
-        host: ${{ secrets.WINDOWS_HOST }}
-        username: ${{ secrets.WINDOWS_USERNAME }}
-        key: ${{ secrets.WINDOWS_SSH_KEY }}
-        port: ${{ secrets.WINDOWS_PORT }}
-        source: "deploy_temp/*"
-        target: "${{ env.DEPLOY_PATH }}"
-        strip_components: 1
-        overwrite: true
+    - #name: Copy files to Windows Server via SCP
+      #uses: appleboy/scp-action@v1
+      #with:
+      #  host: ${{ secrets.WINDOWS_HOST }}
+      #  username: ${{ secrets.WINDOWS_USERNAME }}
+      #  key: ${{ secrets.WINDOWS_SSH_KEY }}
+      #  port: ${{ secrets.WINDOWS_PORT }}
+      #  source: "deploy_temp/*"
+      #  target: "${{ env.DEPLOY_PATH }}"
+      #  strip_components: 1
+      #  overwrite: true
 
     - name: Deploy on Windows Server via SSH
       uses: appleboy/ssh-action@v1
